@@ -1,0 +1,43 @@
+# OS junk
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+Desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.fleet/
+
+# Python (for bootstrap/graphify-doc-sync.py if used locally)
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.venv/
+venv/
+env/
+
+# Node (none expected, but defensive)
+node_modules/
+*.log
+
+# Local audit outputs — never commit these into the skill repo itself
+docs/audits/
+
+# Local-only experiment scratch
+scratch/
+tmp/
+*.bak
+
+# Secrets — there should never be any here, but defensive
+.env
+.env.*
+!.env.example
+*.pem
+*.key

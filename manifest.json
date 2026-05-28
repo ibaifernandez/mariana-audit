@@ -1,0 +1,148 @@
+{
+  "schema_version": "1.0",
+  "name": "mariana-audit",
+  "display_name": "Mariana Trench Audit",
+  "version": "1.0.0",
+  "description": "Multi-dimensional, evidence-cited audit of a software project (security, accessibility, UX, performance, SEO, database, architecture, legal, ops) powered by a knowledge graph. Reports findings with severities calibrated against published rubrics (CVSS 3.1, WCAG 2.1, GDPR/Ley 21.719/LGPD/CCPA articles) and can mitigate CRITICAL findings in-flight using validated playbooks.",
+  "trigger": "/mariana",
+  "category": "audit",
+  "tags": [
+    "audit",
+    "security",
+    "accessibility",
+    "wcag",
+    "owasp",
+    "cvss",
+    "gdpr",
+    "lopd",
+    "ley-21719",
+    "lgpd",
+    "ccpa",
+    "performance",
+    "core-web-vitals",
+    "seo",
+    "architecture",
+    "technical-debt",
+    "devops",
+    "observability",
+    "graphify",
+    "claude-code"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Ibai Fernández",
+    "url": "https://ibaifernandez.com",
+    "organization": "AGLAYA",
+    "organization_url": "https://aglaya.biz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ibaifernandez/mariana-audit"
+  },
+  "homepage": "https://github.com/ibaifernandez/mariana-audit",
+  "bugs": "https://github.com/ibaifernandez/mariana-audit/issues",
+  "requires": {
+    "claude_code": ">=2.0.0",
+    "graphify": ">=0.8.18",
+    "claude_cli_authenticated": true
+  },
+  "recommends": {
+    "python3": ">=3.10",
+    "node": ">=18",
+    "git": ">=2.30"
+  },
+  "modes": [
+    {
+      "name": "report",
+      "description": "Audit only — no fixes. Default mode."
+    },
+    {
+      "name": "mitigate",
+      "description": "Audit + auto-apply validated playbook for each CRITICAL IMMEDIATE finding."
+    },
+    {
+      "name": "case-by-case",
+      "description": "Audit + ask user per finding to mitigate / report / skip."
+    }
+  ],
+  "fases": [
+    { "id": "0", "name": "Setup + scope" },
+    { "id": "A", "name": "Producto (a11y / UX / perf / SEO)" },
+    { "id": "B", "name": "Backend + Datos + Arquitectura" },
+    { "id": "C", "name": "Cumplimiento legal" },
+    { "id": "D", "name": "Ops + Mantenibilidad" },
+    { "id": "E", "name": "Síntesis + Roadmap" }
+  ],
+  "outputs": {
+    "directory_pattern": "docs/audits/YYYY-MM-DD-mariana/",
+    "files": [
+      "REPORT.md",
+      "audit-A.md",
+      "audit-B.md",
+      "audit-C.md",
+      "audit-D.md",
+      "findings.json",
+      "roadmap.md",
+      "state.json"
+    ]
+  },
+  "playbooks": [
+    {
+      "id": "xss-svg-upload",
+      "title": "XSS via SVG/HTML upload through unfiltered multer",
+      "severity_when_present": "CRITICAL",
+      "cvss_3_1": "AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:L",
+      "cvss_score": 8.0,
+      "owasp_2021": "A03",
+      "empirically_validated": true,
+      "validation_commit": "402b0d7",
+      "validation_repo": "aglaya-kanban-desk",
+      "validation_date": "2026-05-27"
+    },
+    {
+      "id": "supabase-free-backup-r2",
+      "title": "Supabase Free without daily backups / PITR",
+      "severity_when_present": "CRITICAL_OPERATIONAL",
+      "empirically_validated": true,
+      "validation_commits": ["be582cd", "3ae6541"],
+      "validation_repo": "aglaya-kanban-desk",
+      "validation_date": "2026-05-27"
+    }
+  ],
+  "rubrics": [
+    {
+      "dimension": "security",
+      "standard": "CVSS 3.1 + OWASP Top 10 2021",
+      "mandatory_fields": ["cvss_3_1_vector", "cvss_score", "owasp_category", "attacker_level", "user_interaction", "scope", "impact_triad"]
+    },
+    {
+      "dimension": "accessibility",
+      "standard": "WCAG 2.1",
+      "mandatory_fields": ["wcag_version", "wcag_criterion", "wcag_level", "affected_user_group"]
+    },
+    {
+      "dimension": "legal",
+      "standard": "GDPR + Ley 21.719 (Chile) + LGPD (Brazil) + CCPA (California)",
+      "mandatory_fields": ["regulation", "article", "data_subjects_affected", "fine_exposure"]
+    }
+  ],
+  "cooldown": {
+    "script": "bootstrap/check-cooldown.sh",
+    "verdicts": ["FRESH", "RUN", "PARTIAL", "SKIP"],
+    "tunables": {
+      "COOLDOWN_HARD_DAYS": 7,
+      "COOLDOWN_SOFT_DAYS": 30,
+      "COOLDOWN_COMMITS_FOR_PARTIAL": 5,
+      "COOLDOWN_COMMITS_FOR_FULL": 30
+    }
+  },
+  "graph_usage": {
+    "powered_by": "graphify",
+    "graphify_repository": "https://github.com/safishamsi/graphify",
+    "queries_local_graph": true,
+    "queries_global_graph": true,
+    "cross_canon_inheritance": true,
+    "reports_graph_leverage_ratio": true,
+    "target_leverage_ratio": 0.5
+  }
+}
