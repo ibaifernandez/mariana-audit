@@ -58,10 +58,10 @@ After completion, the skill writes everything into a single dated directory in y
 ```
 docs/audits/2026-05-27-mariana/
 ├── REPORT.md           # full consolidated audit, ready to share
-├── audit-A.md          # Fase A — Producto (a11y / UX / perf / SEO)
-├── audit-B.md          # Fase B — Backend + Datos + Arquitectura
-├── audit-C.md          # Fase C — Cumplimiento legal
-├── audit-D.md          # Fase D — Ops + Mantenibilidad
+├── audit-A.md          # Phase A — Product (a11y / UX / perf / SEO)
+├── audit-B.md          # Phase B — Backend + Data + Architecture
+├── audit-C.md          # Phase C — Legal compliance
+├── audit-D.md          # Phase D — Ops + Maintainability
 ├── findings.json       # machine-readable, queryable, every finding with full metadata
 ├── roadmap.md          # sprint-organized remediation plan (P0 / P1 / P2 / P3)
 └── state.json          # resume state for `--resume`
@@ -76,7 +76,7 @@ Every finding includes:
 | Evidence | `server/routes/uploads.js:18` or `graphify query "..."` |
 | Evidence source | `graph-local`, `graph-global`, `code-read`, `tool-external`, `manual-verification` |
 | Remediation | playbook reference or external action required |
-| Status | `OPEN`, `MITIGATED <sha>`, `NO VERIFICABLE — <reason>` |
+| Status | `OPEN`, `MITIGATED <sha>`, `NOT VERIFIABLE — <reason>` |
 | Cross-canon | "Same pattern previously caught in repo `<other-repo>` finding `<id>`" |
 
 ---
@@ -140,7 +140,7 @@ No opinions. CVSS 3.1 for security. WCAG 2.1 levels for accessibility. Specific 
 
 ### 5. Honesty as a first-class state
 
-When the skill can't verify something from inside the audit (Core Web Vitals require a remote Lighthouse, vendor plan tier requires a dashboard login), it marks `[NO VERIFICABLE — <reason>]` instead of pretending. These items go to a dedicated section of the report for follow-up.
+When the skill can't verify something from inside the audit (Core Web Vitals require a remote Lighthouse, vendor plan tier requires a dashboard login), it marks `[NOT VERIFIABLE — <reason>]` instead of pretending. These items go to a dedicated section of the report for follow-up.
 
 ### 6. Cooldown gate — won't waste your tokens
 
@@ -255,7 +255,7 @@ The skill **refuses** to:
 - Apply a fix outside the safe-playbook list without explicit user OK.
 - Mitigate in `--mode report`.
 
-When something can't be verified from inside the audit, the skill marks `[NO VERIFICABLE — <reason>]` explicitly and lists it in the report as an external follow-up.
+When something can't be verified from inside the audit, the skill marks `[NOT VERIFIABLE — <reason>]` explicitly and lists it in the report as an external follow-up.
 
 ---
 

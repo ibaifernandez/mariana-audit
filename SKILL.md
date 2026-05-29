@@ -10,7 +10,7 @@ Full-depth multi-dimensional audit of a codebase or product. Designed to surface
 
 **Powered by graphify.** Without a knowledge graph the skill runs at half potency. The first thing it checks is graph presence and freshness.
 
-**Empirically validated.** This skill is the codified outcome of an audit run in May 2026 against `aglaya-kanban-desk` (Express + Supabase + React stack) that surfaced 1 XSS (CVSS 8.0) and 1 backup-strategy crítico in the first session, both mitigated the same day with verified end-to-end fixes.
+**Empirically validated.** This skill is the codified outcome of an audit run in May 2026 against `aglaya-kanban-desk` (Express + Supabase + React stack) that surfaced 1 XSS (CVSS 8.0) and 1 backup-strategy CRITICAL in the first session, both mitigated the same day with verified end-to-end fixes.
 
 ## Usage
 
@@ -18,7 +18,7 @@ Full-depth multi-dimensional audit of a codebase or product. Designed to surface
 /mariana                       # audit current directory, ask mode interactively
 /mariana <path>                # audit specific path
 /mariana --mode report         # report-only, no fixes (default if unspecified)
-/mariana --mode mitigate       # mitigate every CRÍTICO IMMEDIATO as it appears (XSS, backup, etc.)
+/mariana --mode mitigate       # mitigate every CRITICAL IMMEDIATE as it appears (XSS, backup, etc.)
 /mariana --mode case-by-case   # pause and ask per-finding whether to mitigate
 /mariana --resume              # resume from last incomplete fase (reads audits/YYYY-MM-DD-mariana/state.json)
 /mariana --no-cross-canon      # skip global graph cross-canon checks
@@ -31,11 +31,11 @@ Full-depth multi-dimensional audit of a codebase or product. Designed to surface
 
 If `--mode` not passed, ask user:
 
-> Selecciona modo de auditoría:
+> Select audit mode:
 >
-> 1. **`report`** — solo audit, sin fixes. Salida: `REPORT.md` + `findings.json`. Remediación en sesiones aparte.
-> 2. **`mitigate`** — audit + mitigar **automáticamente** cualquier hallazgo CRÍTICO INMEDIATO con playbook validado (XSS upload, backup strategy, etc.). Solo CRÍTICO — ALTO/MEDIO/BAJO quedan en report.
-> 3. **`case-by-case`** — audit + por cada hallazgo CRÍTICO/ALTO, pausa y pregunta `mitigar / dejar en report / saltar`.
+> 1. **`report`** — audit only, no fixes. Output: `REPORT.md` + `findings.json`. Remediation in separate sessions.
+> 2. **`mitigate`** — audit + **automatically** mitigate any CRITICAL IMMEDIATE finding using a validated playbook (XSS upload, backup strategy, etc.). Only CRITICAL — HIGH/MEDIUM/LOW stay in the report.
+> 3. **`case-by-case`** — audit + for every CRITICAL/HIGH finding, pause and ask `mitigate / leave in report / skip`.
 
 If `<path>` not given, use `.` (current directory).
 
@@ -92,7 +92,7 @@ If any step fails, the script reports what's missing and exits with non-zero. Th
 
 If the user accepts a degraded setup (stale graph, missing global publication, etc.), note the warning in the final `REPORT.md`.
 
-### Step 2 — Fase 0: setup and scope matrix
+### Step 2 — Phase 0: setup and scope matrix
 
 Create output directory `docs/audits/YYYY-MM-DD-mariana/` (use today's UTC date).
 
@@ -113,7 +113,7 @@ Run scope detection. Map the project to detect stack archetype:
    - `.github/workflows/` → CI present
    - `Sentry`/`OpenTelemetry`/`pino` imports → observability layer
    - `helmet`/`express-rate-limit` → security middleware
-   - `multer` → file upload (XSS-via-upload vector — flag for Fase B priority)
+   - `multer` → file upload (XSS-via-upload vector — flag for Phase B priority)
 
 Build the scope matrix and report to user:
 
@@ -121,20 +121,20 @@ Build the scope matrix and report to user:
 Stack detected: <archetype>
 Dimensions in scope (mark N/A with reason):
 
-#  Dim                       Aplicable   Razón
-1  Seguridad                 SÍ / N/A   <reason>
-2  Accesibilidad WCAG 2.1    SÍ / N/A   <reason>
-3  Usabilidad                SÍ / N/A   <reason>
-4  Performance               SÍ / PARCIAL <reason — e.g., Core Web Vitals NO VERIFICABLE sin deploy>
-5  Bases de datos            SÍ / N/A   <reason>
-6  SEO técnico               SÍ / N/A   <reason — auth-walled → mark partial: solo OG share tags>
-7  Arquitectura + deuda      SÍ
-8  Cumplimiento legal        SÍ / N/A   <reason — internal-only tool no third-party data>
-9  Cookies + consent         SÍ / N/A   <reason>
-10 Data retention + DPA      SÍ / N/A   <reason>
-11 DevOps / CI               SÍ
-12 Despliegue + observ.       SÍ / PARCIAL
-13 Docs + mantenibilidad     SÍ
+#  Dim                       Applicable   Reason
+1  Security                 YES / N/A   <reason>
+2  Accessibility WCAG 2.1    YES / N/A   <reason>
+3  Usability                YES / N/A   <reason>
+4  Performance               YES / PARTIAL <reason — e.g., Core Web Vitals NOT VERIFIABLE without deploy>
+5  Databases            YES / N/A   <reason>
+6  Technical SEO               YES / N/A   <reason — auth-walled → mark partial: solo OG share tags>
+7  Architecture + technical debt      YES
+8  Legal compliance        YES / N/A   <reason — internal-only tool no third-party data>
+9  Cookies + consent         YES / N/A   <reason>
+10 Data retention + DPA      YES / N/A   <reason>
+11 DevOps / CI               YES
+12 Deployment + Observ.       YES / PARTIAL
+13 Docs + maintainability     YES
 ```
 
 **Archetype-specific defaults:**
@@ -145,9 +145,9 @@ Dimensions in scope (mark N/A with reason):
 - **Public API without UI**: B + C full; A only perf/observability; D full.
 - **Internal-only tool with auth-walled UI**: A full; B full; C reduced (no public privacy obligation, still internal compliance); D full.
 
-Ask user `OK Fase 0` (or `--auto-ok` if non-interactive). Wait for confirmation.
+Ask user `OK Phase 0` (or `--auto-ok` if non-interactive). Wait for confirmation.
 
-### Step 3 — Fase A: Producto cara al usuario
+### Step 3 — Phase A: Product surface
 
 Dimensions: Accessibility (WCAG 2.1 AA), Usability, Performance, SEO.
 
@@ -185,7 +185,7 @@ Required checks. Cite the WCAG criterion in each finding.
 
 - Bundle size: run `npm run build` or equivalent, report main bundle KB + gzip
 - Code splitting: `React.lazy` per route, `manualChunks` vendor
-- Core Web Vitals (LCP/INP/CLS): `[NO VERIFICABLE — requires Lighthouse against deploy]` — recommend running PageSpeed Insights manually
+- Core Web Vitals (LCP/INP/CLS): `[NOT VERIFIABLE — requires Lighthouse against deploy]` — recommend running PageSpeed Insights manually
 - Server timing: middleware order in Express/FastAPI — heavy middleware before light = wasted CPU
 
 #### SEO
@@ -195,9 +195,9 @@ If app is auth-walled → SEO ranking is N/A. Still check:
 - `robots.txt` present with explicit rules
 - `sitemap.xml` if public pages exist
 
-Output: `docs/audits/YYYY-MM-DD-mariana/audit-A.md` with table `ID|Dim|Hallazgo|Evidencia|Severidad|Esfuerzo` and severity counts. Then wait for user `OK Fase A`.
+Output: `docs/audits/YYYY-MM-DD-mariana/audit-A.md` with table `ID|Dim|Finding|Evidence|Severity|Effort` and severity counts. Then wait for user `OK Phase A`.
 
-### Step 4 — Fase B: Backend + Datos + Arquitectura
+### Step 4 — Phase B: Backend + Data + Architecture
 
 **Highest density of findings. Where graphify shines.**
 
@@ -209,7 +209,7 @@ Required checks:
 
 1. **Authentication & session**
    - Where is the session stored? JWT in localStorage = XSS-exfiltrable. HttpOnly cookie = better.
-   - JWT TTL: > 24h without refresh token = ALTO (amplifies any XSS).
+   - JWT TTL: > 24h without refresh token = HIGH (amplifies any XSS).
    - JWT claims (role, orgId, etc.) re-validated against DB per request? If not, stale role for entire token TTL.
    - JWT_SECRET handling: `grep -rE "JWT_SECRET\s*=\s*['\"]" --include="*.{js,ts,py}"` — never hardcoded.
    - `.env` files: `git log --all -- ".env"` — should be empty.
@@ -222,7 +222,7 @@ Required checks:
    - Endpoints behind `requireAuth`? Static `/uploads` typically NOT guarded (kanban pattern).
    - Role-based gates (`requireRole`, `requireWorkspaceMember`) consistently applied?
 4. **Rate limiting**
-   - Coverage: `/api/auth` is common; broader API often unprotected. ALTO if not global.
+   - Coverage: `/api/auth` is common; broader API often unprotected. HIGH if not global.
 5. **CORS**
    - Production allowlist explicit (not `*` nor `*.netlify.app` wide).
 6. **Webhook security**
@@ -237,7 +237,7 @@ Required checks:
    - File read by path: parameterized, denylist `..`.
 9. **Information disclosure**
    - Default platform URLs exposed (e.g. `*.railway.app`, `*.vercel.app`)?
-     - If yes → ALTO. Block via Cloudflare WAF or middleware that requires proxy header.
+     - If yes → HIGH. Block via Cloudflare WAF or middleware that requires proxy header.
 10. **Dependencies**
     - Run `npm audit --omit=dev --audit-level=high` (Node) or `pip-audit` (Python). Report HIGH+ CVEs.
 
@@ -250,7 +250,7 @@ Required checks:
    - See `playbooks/supabase-free-backup-r2.md` for mitigation.
 5. **Migrations** versioned, idempotent, runnable in CI.
 6. **GRANTs** explicit for `anon` / `authenticated` roles where appropriate. Without explicit GRANT, future client-side queries via `supabase-js` fail.
-7. **PII inventory** in schema: identify which columns contain personal data (email, name, IP, device_id, etc.). Feed into Fase C RAT.
+7. **PII inventory** in schema: identify which columns contain personal data (email, name, IP, device_id, etc.). Feed into Phase C RAT.
 
 #### Architecture + technical debt
 
@@ -282,9 +282,9 @@ graphify query "<finding-keyword>" --graph ~/.graphify/global-graph.json --budge
 
 If a known pattern matches (e.g. "Supabase Free without backup" was previously caught in another repo), include reference: `pattern previously caught in <other-repo> as <finding-id>`. Reuses prior analysis.
 
-Output: `audit-B.md`. Wait for `OK Fase B`.
+Output: `audit-B.md`. Wait for `OK Phase B`.
 
-### Step 5 — Fase C: Cumplimiento legal
+### Step 5 — Phase C: Legal compliance
 
 **Cite the specific article** of the regulation each finding violates.
 
@@ -311,9 +311,9 @@ Required checks:
 13. **DPO contact** — public contact (email or form) dedicated for data protection inquiries.
 14. **JWT minimization** — JWTs should not carry PII beyond what's strictly necessary (don't put full email, name, phone in claims if a user ID is enough).
 
-Output: `audit-C.md`. Wait for `OK Fase C`.
+Output: `audit-C.md`. Wait for `OK Phase C`.
 
-### Step 6 — Fase D: Ops + Mantenibilidad
+### Step 6 — Phase D: Ops + Maintainability
 
 1. **CI/CD** — `.github/workflows/` or equivalent present? At minimum: test + build + lint on PR.
 2. **Error tracking** — Sentry, Rollbar, Bugsnag, etc. integrated? Server + client.
@@ -328,9 +328,9 @@ Output: `audit-C.md`. Wait for `OK Fase C`.
 11. **Onboarding** — `docs/onboarding/` or equivalent for new contributors.
 12. **Deploy strategy** — git-push triggered? Manual? Approval gate? Rollback procedure?
 
-Output: `audit-D.md`. Wait for `OK Fase D`.
+Output: `audit-D.md`. Wait for `OK Phase D`.
 
-### Step 7 — Fase E: Síntesis + Roadmap
+### Step 7 — Phase E: Synthesis + Roadmap
 
 Consolidate all findings from A→D into:
 
@@ -339,9 +339,9 @@ Consolidate all findings from A→D into:
    ID | Sev | Effort (h) | Impact | Priority | Sprint
    ```
    - P0: CRITICAL + legal exposure
-   - P1: ALTO security/UX bloqueante
-   - P2: MEDIO
-   - P3: BAJO / nice-to-have
+   - P1: HIGH security/UX bloqueante
+   - P2: MEDIUM
+   - P3: LOW / nice-to-have
 
 2. **Roadmap** in 2-week sprints:
    - Sprint 1: close all P0
@@ -377,7 +377,7 @@ If during any fase a finding meets **CRITICAL IMMEDIATE** criteria (actively exp
 3. **Based on mode**:
    - `report`: log, ask user to mitigate later, **do NOT proceed until user explicitly says continue**.
    - `mitigate`: apply the matching playbook from `playbooks/`. If no playbook exists for this finding, ask user to confirm before manual mitigation.
-   - `case-by-case`: ask user `mitigar / dejar / saltar`. Wait for answer.
+   - `case-by-case`: ask user `mitigate / leave / skip`. Wait for answer.
 4. After mitigation, **verify the fix**: smoke test, unit test, end-to-end check against production if applicable.
 5. **Commit the fix** with clear message referencing audit ID:
    ```
@@ -413,8 +413,8 @@ Summary:
 ## Honesty rules
 
 1. **No fixes without OK in `report` mode.** Even cosmetic.
-2. **Never invent a CVSS or WCAG ref.** If unsure, mark `[NO VERIFICABLE — cite needed]`.
-3. **`[NO VERIFICABLE]`** is a valid finding state. Mark explicitly when:
+2. **Never invent a CVSS or WCAG ref.** If unsure, mark `[NOT VERIFIABLE — cite needed]`.
+3. **`[NOT VERIFIABLE]`** is a valid finding state. Mark explicitly when:
    - Core Web Vitals require Lighthouse against deploy (skill can't run remote Lighthouse from CLI).
    - Cyclomatic complexity per-function requires `eslint-plugin-complexity` or `radon` not installed.
    - DPA acceptance state requires logging into vendor dashboards.
@@ -469,7 +469,7 @@ State is saved after each fase. On resume, the skill picks up from `fase_in_prog
 
 ## Acknowledgements
 
-This skill encodes practice from a real audit against `aglaya-kanban-desk` (May 2026), commits `dad39d8` (refactor), `402b0d7` (XSS fix), `5e94b54` (Fase C close).
+This skill encodes practice from a real audit against `aglaya-kanban-desk` (May 2026), commits `dad39d8` (refactor), `402b0d7` (XSS fix), `5e94b54` (Phase C close).
 
 Powered by [graphify](https://github.com/safishamsi/graphify).
 

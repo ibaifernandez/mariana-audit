@@ -8,7 +8,7 @@ A sanitized version of the audit that produced this skill — an Express + Supab
 
 - **48 findings** across 5 fases (0 / A / B / C / D), with E synthesizing into a sprint-organized roadmap.
 - **2 CRITICAL mitigated in-flight** during the audit: XSS via SVG upload (CVSS 8.0) and Supabase Free without backups (catastrophic operational).
-- **5 CRITICAL open** in Fase C (legal compliance — privacy policy, DPA registry, self-delete + self-export endpoints).
+- **5 CRITICAL open** in Phase C (legal compliance — privacy policy, DPA registry, self-delete + self-export endpoints).
 - **Graph leverage ratio: 56%** (above the 50% target).
 
 Files in the example:

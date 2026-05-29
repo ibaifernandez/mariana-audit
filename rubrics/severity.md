@@ -8,10 +8,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | CVSS Score | What it means |
 |----------|-----------|---------------|
-| CRÍTICO  | 9.0–10.0  | Active, large-impact exploitation possible. Drop everything. |
-| ALTO     | 7.0–8.9   | Significant impact; auth user or chained vector. Sprint 1. |
-| MEDIO    | 4.0–6.9   | Lower impact or higher complexity. Sprint 2-3. |
-| BAJO     | 0.1–3.9   | Minor / informational with security relevance. Backlog. |
+| CRITICAL  | 9.0–10.0  | Active, large-impact exploitation possible. Drop everything. |
+| HIGH     | 7.0–8.9   | Significant impact; auth user or chained vector. Sprint 1. |
+| MEDIUM    | 4.0–6.9   | Lower impact or higher complexity. Sprint 2-3. |
+| LOW     | 0.1–3.9   | Minor / informational with security relevance. Backlog. |
 
 **Mandatory fields per security finding:**
 
@@ -30,10 +30,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | WCAG criterion level | What it means |
 |----------|---------------------|---------------|
-| CRÍTICO  | Level A failure     | Blocks usage for a group of users entirely. |
-| ALTO     | Level AA failure    | Significant barrier for users with disabilities. |
-| MEDIO    | Level AAA failure   | Best-practice gap (not legally mandatory in most contexts). |
-| BAJO     | Best-practice (no WCAG criterion) | Improvement, not a barrier. |
+| CRITICAL  | Level A failure     | Blocks usage for a group of users entirely. |
+| HIGH     | Level AA failure    | Significant barrier for users with disabilities. |
+| MEDIUM    | Level AAA failure   | Best-practice gap (not legally mandatory in most contexts). |
+| LOW     | Best-practice (no WCAG criterion) | Improvement, not a barrier. |
 
 **Mandatory fields per a11y finding:**
 
@@ -48,10 +48,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | Trigger |
 |----------|---------|
-| CRÍTICO  | Direct violation of a fundamental obligation: privacy policy absent, no DPA registry, no self-delete/self-export endpoint, breach notification process absent, unauthorized international transfer. |
-| ALTO     | Significant gap: legal basis not declared, TOMs not documented, retention period not specified, DPIA missing for high-risk processing. |
-| MEDIO    | Documentation gaps: RAT not formal, DPO contact not public, internal training not recorded. |
-| BAJO     | Nice-to-have: consent banner aesthetic improvement, language localization. |
+| CRITICAL  | Direct violation of a fundamental obligation: privacy policy absent, no DPA registry, no self-delete/self-export endpoint, breach notification process absent, unauthorized international transfer. |
+| HIGH     | Significant gap: legal basis not declared, TOMs not documented, retention period not specified, DPIA missing for high-risk processing. |
+| MEDIUM    | Documentation gaps: RAT not formal, DPO contact not public, internal training not recorded. |
+| LOW     | Nice-to-have: consent banner aesthetic improvement, language localization. |
 
 **Mandatory fields per legal finding:**
 
@@ -66,10 +66,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | Trigger |
 |----------|---------|
-| CRÍTICO  | Catastrophic data loss possible: no backups + no PITR (e.g. Supabase Free); RLS off on tables with sensitive data + client-side direct access. |
-| ALTO     | Significant operational risk: missing indexes causing query timeouts; FK constraints incomplete; no monitoring on critical metrics. |
-| MEDIO    | Hardening gaps: defense-in-depth missing (e.g. RLS enabled but only `service_role` used and bypasses it); slow but functional queries. |
-| BAJO     | Schema hygiene: dead columns, untyped columns, no soft-delete. |
+| CRITICAL  | Catastrophic data loss possible: no backups + no PITR (e.g. Supabase Free); RLS off on tables with sensitive data + client-side direct access. |
+| HIGH     | Significant operational risk: missing indexes causing query timeouts; FK constraints incomplete; no monitoring on critical metrics. |
+| MEDIUM    | Hardening gaps: defense-in-depth missing (e.g. RLS enabled but only `service_role` used and bypasses it); slow but functional queries. |
+| LOW     | Schema hygiene: dead columns, untyped columns, no soft-delete. |
 
 ---
 
@@ -77,10 +77,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | Trigger |
 |----------|---------|
-| CRÍTICO  | Single-point-of-failure that blocks development (e.g. one undocumented mega-function that everyone modifies); circular dependencies causing build failures. |
-| ALTO     | Significant maintenance cost: god nodes with high coupling (degree > 30 + low cohesion); business logic in routes (untestable). |
-| MEDIO    | Coupling worth refactoring opportunistically: components > 700 LOC; duplicate helpers across modules. |
-| BAJO     | Code smell with no current pain: inconsistent naming, missing types. |
+| CRITICAL  | Single-point-of-failure that blocks development (e.g. one undocumented mega-function that everyone modifies); circular dependencies causing build failures. |
+| HIGH     | Significant maintenance cost: god nodes with high coupling (degree > 30 + low cohesion); business logic in routes (untestable). |
+| MEDIUM    | Coupling worth refactoring opportunistically: components > 700 LOC; duplicate helpers across modules. |
+| LOW     | Code smell with no current pain: inconsistent naming, missing types. |
 
 **Important: god-node `degree` measures surface of imports, NOT acoupling.** A router that delegates 5 endpoints to 5 services will have `degree=29` and be perfectly factored. Read the code before recommending refactor.
 
@@ -90,10 +90,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | Trigger |
 |----------|---------|
-| CRÍTICO  | No deploy rollback path; no backup verification ever performed; secrets in repo history. |
-| ALTO     | No CI for tests/build/lint; no error tracking; no alerts on critical metrics; manual deploys with high human-error risk. |
-| MEDIO    | No structured logs; no uptime monitoring; outdated dependencies with known CVEs; no linter/types. |
-| BAJO     | No runbooks for non-critical procedures; AGENTS.md/CLAUDE.md not maintained. |
+| CRITICAL  | No deploy rollback path; no backup verification ever performed; secrets in repo history. |
+| HIGH     | No CI for tests/build/lint; no error tracking; no alerts on critical metrics; manual deploys with high human-error risk. |
+| MEDIUM    | No structured logs; no uptime monitoring; outdated dependencies with known CVEs; no linter/types. |
+| LOW     | No runbooks for non-critical procedures; AGENTS.md/CLAUDE.md not maintained. |
 
 ---
 
@@ -101,10 +101,10 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 | Severity | Trigger |
 |----------|---------|
-| CRÍTICO  | README points to broken/outdated build steps that block new contributors. |
-| ALTO     | ADRs missing for major architectural decisions; onboarding doc absent for team that has new joiners. |
-| MEDIO    | Glossary missing; API not documented (OpenAPI/Swagger). |
-| BAJO     | Code comments sparse; CHANGELOG not maintained. |
+| CRITICAL  | README points to broken/outdated build steps that block new contributors. |
+| HIGH     | ADRs missing for major architectural decisions; onboarding doc absent for team that has new joiners. |
+| MEDIUM    | Glossary missing; API not documented (OpenAPI/Swagger). |
+| LOW     | Code comments sparse; CHANGELOG not maintained. |
 
 ---
 
@@ -112,7 +112,7 @@ This rubric is non-negotiable. Every finding gets a severity. If you cannot just
 
 These rules **automatically escalate** severity beyond the per-dimension rubric:
 
-1. **Active exploitation observed** → automatic CRÍTICO IMMEDIATE.
+1. **Active exploitation observed** → automatic CRITICAL IMMEDIATE.
 2. **Combined factor: known regulatory deadline within 30 days** → +1 severity tier.
 3. **Combined factor: handling sensitive data (health, finance, minors, religion, biometrics)** → +1 tier for any related security/legal finding.
 4. **Combined factor: production data affected (not staging or dev)** → +1 tier for any backup/restore-related finding.
@@ -126,7 +126,7 @@ These **reduce** severity automatically:
 
 1. **Already mitigated via another layer**: e.g. a missing RLS policy where all code paths go through `service_role` server-side. Document as "latent" rather than active.
 2. **No path to exploitation in this codebase**: e.g. SSRF concern but `httpx` configured with `follow_redirects=False`.
-3. **Pre-existing test/security debt explicitly tracked** in `docs/known-debt.md`: severity stays in `MEDIO` ceiling unless escalated by another rule.
+3. **Pre-existing test/security debt explicitly tracked** in `docs/known-debt.md`: severity stays in `MEDIUM` ceiling unless escalated by another rule.
 
 ---
 

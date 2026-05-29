@@ -122,7 +122,7 @@ Manual testing against a real repo is the gold standard. At minimum:
 PRs will be reviewed for:
 
 1. **Empirical grounding.** Did this come from a real audit, or is it theoretical? Theoretical is fine, just label it.
-2. **Honesty.** No invented CVSS / WCAG / regulation references. If unsure, omit and mark `[NO VERIFICABLE]`.
+2. **Honesty.** No invented CVSS / WCAG / regulation references. If unsure, omit and mark `[NOT VERIFIABLE]`.
 3. **Reusability.** Will this playbook help others, or is it too project-specific?
 4. **Documentation.** Reader (not just author) can apply the playbook without further context.
 5. **Backward compatibility.** Existing audits using the previous output schema continue to validate.

@@ -15,7 +15,7 @@ grep -rn "@supabase/supabase-js" package.json
 
 # 2. What plan? CANNOT be detected from code. Required user/operator confirmation via
 #    Supabase dashboard → Settings → Billing.
-echo "Ask operator: ¿plan Supabase Free, Pro, Team, or Enterprise?"
+echo "Ask operator: Plan: Supabase Free, Pro, Team, or Enterprise?"
 
 # 3. Existing backup workflow?
 ls .github/workflows/ 2>/dev/null | grep -i "backup"
@@ -42,7 +42,7 @@ Supabase Free has:
 
 ### Why Native R2 API, not S3-compatible
 
-**Gotcha empíricamente confirmado (27 May 2026):** Cloudflare R2 issues two distinct token types:
+**Gotcha empirically confirmed (27 May 2026):** Cloudflare R2 issues two distinct token types:
 
 - `cfat_*` tokens → **S3 API ONLY**.
 - `cfut_*` tokens → **Native R2 API ONLY**.
@@ -259,7 +259,7 @@ Restore procedure documented in docs/runbooks/db-restore.md.
 Smoke test executed against local Postgres 17: green.
 
 Structural mitigation (Supabase Pro $25/mo with PITR 7d) deferred to
-roadmap Fase E.
+roadmap Phase E.
 
 Co-Authored-By: Claude Opus 4.7 (1M context) <noreply@anthropic.com>
 ```

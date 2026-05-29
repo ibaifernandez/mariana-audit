@@ -29,13 +29,13 @@
 
 | Severity | Count |
 |----------|-------|
-| CRÍTICO mitigated during audit | 2 |
-| CRÍTICO open | 5 |
-| ALTO     | 16 |
-| MEDIO    | 13 |
-| BAJO     | 5 |
+| CRITICAL mitigated during audit | 2 |
+| CRITICAL open | 5 |
+| HIGH     | 16 |
+| MEDIUM    | 13 |
+| LOW     | 5 |
 | INFO / N-A | 3 |
-| [NO VERIFICABLE] | 4 |
+| [NOT VERIFIABLE] | 4 |
 | **Total findings** | **48** |
 
 ---
@@ -46,57 +46,57 @@ Stack archetype detected: **SaaS with Express backend + Supabase Postgres + Reac
 
 | # | Dimension | Applicable | Reason / Notes |
 |---|-----------|------------|----------------|
-| 1 | Seguridad | SÍ | auth user-facing, JWT, file uploads, webhooks |
-| 2 | Accesibilidad WCAG 2.1 | SÍ | UI used daily by team and external clients |
-| 3 | Usabilidad | SÍ | herramienta de trabajo diario |
-| 4 | Performance | PARCIAL | bundle verifiable; Core Web Vitals NO VERIFICABLE (require Lighthouse against deploy with auth session) |
-| 5 | Bases de datos | SÍ | Supabase Postgres with RLS, multi-tenant data |
-| 6 | SEO técnico | PARCIAL | auth-walled; only OG share tags + robots.txt apply |
-| 7 | Arquitectura + deuda | SÍ | grafo onboardado, cross-canon checks habilitados |
-| 8 | Cumplimiento legal | SÍ | datos personales + integraciones third-party + procesamiento internacional |
-| 9 | Cookies + consent | SÍ | JWT en localStorage no requiere banner (no es cookie de tracking); pero analytics si está activo, sí |
-| 10 | Data retention + DPA | SÍ | 5 procesadores externos, ninguno con DPA documentado en repo |
-| 11 | DevOps / CI | SÍ | un workflow GitHub Actions presente (cron); ningún CI de tests/build/lint |
-| 12 | Despliegue + observabilidad | PARCIAL | logs a stdout via PaaS; Sentry/alerts NO VERIFICABLE sin dashboard access |
-| 13 | Docs + mantenibilidad | SÍ | docs/ con 14 archivos, ADRs hasta 025 |
+| 1 | Security | YES | auth user-facing, JWT, file uploads, webhooks |
+| 2 | Accessibility WCAG 2.1 | YES | UI used daily by team and external clients |
+| 3 | Usability | YES | daily-use team tool |
+| 4 | Performance | PARTIAL | bundle verifiable; Core Web Vitals NOT VERIFIABLE (require Lighthouse against deploy with auth session) |
+| 5 | Databases | YES | Supabase Postgres with RLS, multi-tenant data |
+| 6 | Technical SEO | PARTIAL | auth-walled; only OG share tags + robots.txt apply |
+| 7 | Architecture + technical debt | YES | graph onboarded, cross-canon checks enabled |
+| 8 | Legal compliance | YES | personal data + third-party integrations + international processing |
+| 9 | Cookies + consent | YES | JWT in localStorage does not require a banner (not a tracking cookie); analytics, if active, does |
+| 10 | Data retention + DPA | YES | 5 external processors, none with DPA documented in the repo |
+| 11 | DevOps / CI | YES | one GitHub Actions workflow present (cron); no CI for tests/build/lint |
+| 12 | Deployment + Observability | PARTIAL | logs to stdout via PaaS; Sentry/alerts NOT VERIFIABLE without dashboard access |
+| 13 | Docs + maintainability | YES | docs/ with 14 files, ADRs up to 025 |
 
 ---
 
-## Fase A — Producto cara al usuario
+## Phase A — Product surface
 
-**Findings count:** 24 (CRÍTICO: 8, ALTO: 8, MEDIO: 5, BAJO: 1, INFO: 2)
+**Findings count:** 24 (CRITICAL: 8, HIGH: 8, MEDIUM: 5, LOW: 1, INFO: 2)
 
 ### Top critical findings
 
-| ID | Hallazgo | Evidencia | WCAG criterion | Severidad |
+| ID | Finding | Evidence | WCAG criterion | Severity |
 |----|----------|-----------|----------------|-----------|
-| A-01 | Form labels not programmatically associated (52 inputs, 0 `htmlFor`, 0 `aria-label`) | `client/src/components/*` | 1.3.1 + 3.3.2 + 4.1.2 (A) | CRÍTICO |
-| A-02 | Drag-and-drop without keyboard support (0 `KeyboardSensor`) | `client/src/components/Board/*` | 2.1.1 (A) | CRÍTICO |
-| A-03 | Modal dialogs lack `role="dialog"` + `aria-modal` | `client/src/components/*Modal*` | 4.1.2 + 1.3.1 (A) | CRÍTICO |
-| A-04 | Icon-only buttons lack accessible name | `client/src/components/*` | 4.1.2 (A) | CRÍTICO |
-| A-05 | Spinner lacks `role="status"` + `aria-live` | `client/src/components/UI/Spinner.jsx` | 4.1.3 (A) | CRÍTICO |
-| A-17 | Focus trap absent in 6+ modals (no library, no manual) | grafo: 6 modal components matched | 2.4.3 + 2.4.11 (AA) | CRÍTICO |
-| A-19 | Skip-to-content link absent | `client/index.html` | 2.4.1 (A) | CRÍTICO |
-| A-22 | Forms lack `aria-invalid` / `aria-describedby` / `aria-required` (35 setError vs 0 ARIA) | grep `setError` vs `aria-` | 3.3.1 + 3.3.3 (A) | CRÍTICO |
+| A-01 | Form labels not programmatically associated (52 inputs, 0 `htmlFor`, 0 `aria-label`) | `client/src/components/*` | 1.3.1 + 3.3.2 + 4.1.2 (A) | CRITICAL |
+| A-02 | Drag-and-drop without keyboard support (0 `KeyboardSensor`) | `client/src/components/Board/*` | 2.1.1 (A) | CRITICAL |
+| A-03 | Modal dialogs lack `role="dialog"` + `aria-modal` | `client/src/components/*Modal*` | 4.1.2 + 1.3.1 (A) | CRITICAL |
+| A-04 | Icon-only buttons lack accessible name | `client/src/components/*` | 4.1.2 (A) | CRITICAL |
+| A-05 | Spinner lacks `role="status"` + `aria-live` | `client/src/components/UI/Spinner.jsx` | 4.1.3 (A) | CRITICAL |
+| A-17 | Focus trap absent in 6+ modals (no library, no manual) | grafo: 6 modal components matched | 2.4.3 + 2.4.11 (AA) | CRITICAL |
+| A-19 | Skip-to-content link absent | `client/index.html` | 2.4.1 (A) | CRITICAL |
+| A-22 | Forms lack `aria-invalid` / `aria-describedby` / `aria-required` (35 setError vs 0 ARIA) | grep `setError` vs `aria-` | 3.3.1 + 3.3.3 (A) | CRITICAL |
 
 ### Performance highlights
 
 - Bundle: **721 KB JS / 205 KB gzip / 1815 modules / 1 chunk** — login screen ships the entire app. Recommended fix: `React.lazy` per route + `manualChunks` for vendor.
-- Core Web Vitals: **[NO VERIFICABLE]** — require Lighthouse against authenticated production session. Recommendation: run PageSpeed Insights manually post-login.
+- Core Web Vitals: **[NOT VERIFIABLE]** — require Lighthouse against authenticated production session. Recommendation: run PageSpeed Insights manually post-login.
 
 ### SEO
 
 - App is auth-walled → SEO ranking is N/A.
-- `index.html` lacks OG tags, Twitter card, canonical → sharing in social/Slack degrades preview (A-12 MEDIO).
+- `index.html` lacks OG tags, Twitter card, canonical → sharing in social/Slack degrades preview (A-12 MEDIUM).
 - `robots.txt` present but boilerplate; no `sitemap.xml`.
 
 Per-finding detail in `audit-A.md`.
 
 ---
 
-## Fase B — Backend + Datos + Arquitectura
+## Phase B — Backend + Data + Architecture
 
-**Findings count:** 20 (1 CRÍTICO mitigated, 1 CRÍTICO mitigated, 9 ALTO, 6 MEDIO, 2 BAJO, 1 INFO)
+**Findings count:** 20 (1 CRITICAL mitigated, 1 CRITICAL mitigated, 9 HIGH, 6 MEDIUM, 2 LOW, 1 INFO)
 
 ### Clean verifications (positive findings)
 
@@ -112,22 +112,22 @@ Per-finding detail in `audit-A.md`.
 
 ### CRITICAL findings (mitigated in-flight)
 
-| ID | Hallazgo | Evidencia | OWASP / CVSS | Severidad | Estado |
+| ID | Finding | Evidence | OWASP / CVSS | Severity | Estado |
 |----|----------|-----------|--------------|-----------|--------|
-| B-CRIT-01 | XSS via SVG upload (multer without fileFilter + `/uploads/*` served same-origin) | `server/routes/uploads.js:18`, `server/app.js:77`, `netlify.toml /uploads/* redirect` | A03:2021 + CVSS 3.1: 8.0 HIGH (AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:L) | CRÍTICO | **MITIGATED `aaaa111`** via playbook `xss-svg-upload.md` |
-| B-CRIT-02 | Supabase plan = Free → no daily backups / PITR → catastrophic data-loss risk | manual-verification: operator confirmed Free plan | OWASP A05 (operational) + RTO/RPO undefined | CRÍTICO operational | **MITIGATED `bbbb222`** via playbook `supabase-free-backup-r2.md` (daily pg_dump → Cloudflare R2 Native API, 30d retention) |
+| B-CRIT-01 | XSS via SVG upload (multer without fileFilter + `/uploads/*` served same-origin) | `server/routes/uploads.js:18`, `server/app.js:77`, `netlify.toml /uploads/* redirect` | A03:2021 + CVSS 3.1: 8.0 HIGH (AV:N/AC:L/PR:L/UI:R/S:C/C:H/I:H/A:L) | CRITICAL | **MITIGATED `aaaa111`** via playbook `xss-svg-upload.md` |
+| B-CRIT-02 | Supabase plan = Free → no daily backups / PITR → catastrophic data-loss risk | manual-verification: operator confirmed Free plan | OWASP A05 (operational) + RTO/RPO undefined | CRITICAL operational | **MITIGATED `bbbb222`** via playbook `supabase-free-backup-r2.md` (daily pg_dump → Cloudflare R2 Native API, 30d retention) |
 
 ### HIGH findings (open)
 
-| ID | Hallazgo | Severidad | Notes |
+| ID | Finding | Severity | Notes |
 |----|----------|-----------|-------|
-| B-02 | JWT 7d TTL without refresh-token rotation — amplifies any XSS to 7-day session compromise | ALTO | Playbook `jwt-long-ttl-no-refresh.md` available; refactor of significant scope. P1 sprint. |
-| B-03 | Default platform URL `web-production-xxx.up.railway.app` publicly accessible — info disclosure + WAF bypass | ALTO | Playbook `railway-url-exposed.md` available; quick fix via Express middleware. P1. |
-| B-04 / B-11 | RLS not enabled on `organizations` / `boards` (latent; mitigated by service_role server-side today) | ALTO | Defense-in-depth gap. P1. |
-| B-05 | HTML responses lack CSP / X-Frame / X-Content-Type / Referrer-Policy headers | ALTO | Playbook `csp-headers-missing.md` available; netlify.toml block. P1, ~30min. |
-| B-06 | Rate limit only on `/api/auth` — broader API endpoints + internal route unprotected | ALTO | Extend to all endpoints. P1. |
-| B-07 | JWT claims (role / orgId) not re-validated against DB per request — stale role for 7 days | ALTO | Middleware re-validation. P1. |
-| B-10 | Deadline 2026-10-30: GRANTs obligatorios — no CI enforcement | ALTO (degrades over time) | GitHub Actions workflow lint. P2 (>5 months out). |
+| B-02 | JWT 7d TTL without refresh-token rotation — amplifies any XSS to 7-day session compromise | HIGH | Playbook `jwt-long-ttl-no-refresh.md` available; refactor of significant scope. P1 sprint. |
+| B-03 | Default platform URL `web-production-xxx.up.railway.app` publicly accessible — info disclosure + WAF bypass | HIGH | Playbook `railway-url-exposed.md` available; quick fix via Express middleware. P1. |
+| B-04 / B-11 | RLS not enabled on `organizations` / `boards` (latent; mitigated by service_role server-side today) | HIGH | Defense-in-depth gap. P1. |
+| B-05 | HTML responses lack CSP / X-Frame / X-Content-Type / Referrer-Policy headers | HIGH | Playbook `csp-headers-missing.md` available; netlify.toml block. P1, ~30min. |
+| B-06 | Rate limit only on `/api/auth` — broader API endpoints + internal route unprotected | HIGH | Extend to all endpoints. P1. |
+| B-07 | JWT claims (role / orgId) not re-validated against DB per request — stale role for 7 days | HIGH | Middleware re-validation. P1. |
+| B-10 | Deadline 2026-10-30: GRANTs obligatorios — no CI enforcement | HIGH (degrades over time) | GitHub Actions workflow lint. P2 (>5 months out). |
 
 ### Architecture findings
 
@@ -145,9 +145,9 @@ Per-finding detail in `audit-B.md`.
 
 ---
 
-## Fase C — Cumplimiento legal
+## Phase C — Legal compliance
 
-**Findings count:** 18 (CRÍTICO: 5, ALTO: 7, MEDIO: 4, BAJO: 2)
+**Findings count:** 18 (CRITICAL: 5, HIGH: 7, MEDIUM: 4, LOW: 2)
 
 ### Positive findings
 
@@ -156,13 +156,13 @@ Per-finding detail in `audit-B.md`.
 
 ### CRITICAL findings
 
-| ID | Hallazgo | Regulation / Article | Subjects affected | Severidad |
+| ID | Finding | Regulation / Article | Subjects affected | Severity |
 |----|----------|----------------------|--------------------|-----------|
-| C-01 | This specific product lacks a dedicated privacy policy (org-wide policy does not enumerate this sub-product) | GDPR Art. 13 + 14, Ley 21.719 Art. 14 ter | EU + Chile + all | CRÍTICO |
-| C-02 | Supabase is NOT declared as a processor in the org-wide policy (it processes all sensitive data) | GDPR Art. 13 + 28 | EU + all | CRÍTICO |
-| C-03 | `docs/legal/` directory does not exist — no DPAs archived, no RAT, no TOMs documentation | GDPR Art. 28 + 30 + 32, LGPD Art. 39 | all | CRÍTICO |
-| C-04 | No endpoint to self-delete account / data | GDPR Art. 17, LGPD Art. 18, CCPA right-to-delete | all | CRÍTICO |
-| C-05 | No endpoint to self-export data | GDPR Art. 20 (data portability) | EU + analogous in other jurisdictions | CRÍTICO |
+| C-01 | This specific product lacks a dedicated privacy policy (org-wide policy does not enumerate this sub-product) | GDPR Art. 13 + 14, Ley 21.719 Art. 14 ter | EU + Chile + all | CRITICAL |
+| C-02 | Supabase is NOT declared as a processor in the org-wide policy (it processes all sensitive data) | GDPR Art. 13 + 28 | EU + all | CRITICAL |
+| C-03 | `docs/legal/` directory does not exist — no DPAs archived, no RAT, no TOMs documentation | GDPR Art. 28 + 30 + 32, LGPD Art. 39 | all | CRITICAL |
+| C-04 | No endpoint to self-delete account / data | GDPR Art. 17, LGPD Art. 18, CCPA right-to-delete | all | CRITICAL |
+| C-05 | No endpoint to self-export data | GDPR Art. 20 (data portability) | EU + analogous in other jurisdictions | CRITICAL |
 
 ### Operational legal items (require human action)
 
@@ -178,20 +178,20 @@ Per-finding detail in `audit-B.md`.
 
 ---
 
-## Fase D — Ops + Mantenibilidad
+## Phase D — Ops + Maintainability
 
-**Findings count:** 8 (CRÍTICO: 0, ALTO: 4, MEDIO: 3, BAJO: 1)
+**Findings count:** 8 (CRITICAL: 0, HIGH: 4, MEDIUM: 3, LOW: 1)
 
-| ID | Hallazgo | Severidad |
+| ID | Finding | Severity |
 |----|----------|-----------|
-| D-01 | No CI workflow for tests/build/lint on PRs (only the cron exists) | ALTO |
-| D-02 | No error tracking (Sentry / equivalent) integrated | ALTO |
-| D-03 | No uptime monitoring configured | ALTO |
-| D-04 | No alerts on backup-workflow failure (post-mitigation) | ALTO |
-| D-05 | No structured logs (free-form to stdout) | MEDIO |
-| D-06 | No ESLint / Prettier / TypeScript configured | MEDIO |
-| D-07 | README out of sync with `package.json` version | MEDIO |
-| D-08 | `docs/runbooks/` exists for backup-restore but lacks deploy-rollback | BAJO |
+| D-01 | No CI workflow for tests/build/lint on PRs (only the cron exists) | HIGH |
+| D-02 | No error tracking (Sentry / equivalent) integrated | HIGH |
+| D-03 | No uptime monitoring configured | HIGH |
+| D-04 | No alerts on backup-workflow failure (post-mitigation) | HIGH |
+| D-05 | No structured logs (free-form to stdout) | MEDIUM |
+| D-06 | No ESLint / Prettier / TypeScript configured | MEDIUM |
+| D-07 | README out of sync with `package.json` version | MEDIUM |
+| D-08 | `docs/runbooks/` exists for backup-restore but lacks deploy-rollback | LOW |
 
 ---
 
@@ -204,7 +204,7 @@ Per-finding detail in `audit-B.md`.
 
 ---
 
-## NO VERIFICABLE items
+## NOT VERIFIABLE items
 
 | ID | Description | Why not verifiable | Recommended external action |
 |----|-------------|--------------------|-----------------------------|
@@ -217,23 +217,23 @@ Per-finding detail in `audit-B.md`.
 
 ## Priority matrix (excerpt — full list in roadmap.md)
 
-| Finding | Severidad | Effort (h) | Impacto | Prioridad |
+| Finding | Severity | Effort (h) | Impacto | Prioridad |
 |---------|-----------|-----------|---------|-----------|
-| C-01 dedicated privacy policy | CRÍTICO | 6 + legal review | regulatory | P0 |
-| C-04 self-delete endpoint | CRÍTICO | 6 | regulatory | P0 |
-| C-05 self-export endpoint | CRÍTICO | 6 | regulatory | P0 |
-| C-03 docs/legal/ scaffold | CRÍTICO | 1 | regulatory | P0 |
-| C-02 declare Supabase processor (depends on C-01) | CRÍTICO | 0.5 | regulatory | P0 |
-| B-05 CSP headers | ALTO | 0.5 | security | P1 |
-| B-03 Railway URL block | ALTO | 1 | security | P1 |
-| B-06 rate limit global | ALTO | 2 | security | P1 |
-| B-02 JWT refresh | ALTO | 6 | security | P1 |
-| B-07 JWT claims revalidation | ALTO | 3 | security | P1 |
-| A-01 form labels | CRÍTICO | 4 | a11y | P1 |
-| A-02 drag-drop keyboard | CRÍTICO | 8 | a11y | P1 |
-| A-17 focus trap | CRÍTICO | 4 | a11y | P1 |
-| A-22 form aria | CRÍTICO | 4 | a11y | P1 |
-| D-02 Sentry integration | ALTO | 2 | ops | P1 |
+| C-01 dedicated privacy policy | CRITICAL | 6 + legal review | regulatory | P0 |
+| C-04 self-delete endpoint | CRITICAL | 6 | regulatory | P0 |
+| C-05 self-export endpoint | CRITICAL | 6 | regulatory | P0 |
+| C-03 docs/legal/ scaffold | CRITICAL | 1 | regulatory | P0 |
+| C-02 declare Supabase processor (depends on C-01) | CRITICAL | 0.5 | regulatory | P0 |
+| B-05 CSP headers | HIGH | 0.5 | security | P1 |
+| B-03 Railway URL block | HIGH | 1 | security | P1 |
+| B-06 rate limit global | HIGH | 2 | security | P1 |
+| B-02 JWT refresh | HIGH | 6 | security | P1 |
+| B-07 JWT claims revalidation | HIGH | 3 | security | P1 |
+| A-01 form labels | CRITICAL | 4 | a11y | P1 |
+| A-02 drag-drop keyboard | CRITICAL | 8 | a11y | P1 |
+| A-17 focus trap | CRITICAL | 4 | a11y | P1 |
+| A-22 form aria | CRITICAL | 4 | a11y | P1 |
+| D-02 Sentry integration | HIGH | 2 | ops | P1 |
 
 Full priority list in `roadmap.md`.
 
