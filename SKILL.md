@@ -10,7 +10,9 @@ Full-depth multi-dimensional audit of a codebase or product. Designed to surface
 
 **Powered by graphify.** Without a knowledge graph the skill runs at half potency. The first thing it checks is graph presence and freshness.
 
-**Empirically validated.** This skill is the codified outcome of an audit run in May 2026 against `aglaya-kanban-desk` (Express + Supabase + React stack) that surfaced 1 XSS (CVSS 8.0) and 1 backup-strategy CRITICAL in the first session, both mitigated the same day with verified end-to-end fixes.
+**Empirically validated.** Codified from 4 real audits (aglaya-kanban-desk, aglaya-outreach, crm-aglaya, legal-reg-tech) — 266 findings total, 154 mitigated (58% mitigation rate), 3 UNVERIFIABLE across all four (1.1%). The first audit surfaced 1 XSS (CVSS 8.0) and 1 backup-strategy CRITICAL, both mitigated the same day with verified end-to-end fixes.
+
+**v2 upgrade:** confidence tier system (PROVEN / SUSPECTED / UNVERIFIABLE with 4 subtypes), per-phase evidence dashboards, enforcement gate that drops findings without cited evidence, regression delta tracking between audit runs. Inspired by community feedback that the evidence split between graph-derived suspicion vs file-line proof vs external runtime check is the structural property that separates this from a confident lint wrapper.
 
 ## Usage
 
@@ -195,7 +197,24 @@ If app is auth-walled → SEO ranking is N/A. Still check:
 - `robots.txt` present with explicit rules
 - `sitemap.xml` if public pages exist
 
-Output: `docs/audits/YYYY-MM-DD-mariana/audit-A.md` with table `ID|Dim|Finding|Evidence|Severity|Effort` and severity counts. Then wait for user `OK Phase A`.
+**Before writing any findings**, open `audit-A.md` with an evidence dashboard:
+
+```
+## Evidence Dashboard — Phase A
+
+| Confidence   | Count | % of phase |
+|--------------|-------|------------|
+| PROVEN       | <n>   | <pct>%     |
+| SUSPECTED    | <n>   | <pct>%     |
+| UNVERIFIABLE | <n>   | <pct>%     |
+| Total        | <n>   | 100%       |
+
+Source breakdown: code-read <n> · graph-local <n> · graph-global <n> · tool-external <n> · manual-verification <n>
+```
+
+Health signal: PROVEN ≥ 60% = healthy. If SUSPECTED > 40%, attempt code verification on the top 5 suspected findings before finalizing. Document the attempt even on failure — the downgrade to UNVERIFIABLE is the correct outcome.
+
+Then write the full findings table: `ID | Confidence | Dim | Finding | Evidence | Severity | Effort` and severity counts. Then wait for user `OK Phase A`.
 
 ### Step 4 — Phase B: Backend + Data + Architecture
 
@@ -282,7 +301,9 @@ graphify query "<finding-keyword>" --graph ~/.graphify/global-graph.json --budge
 
 If a known pattern matches (e.g. "Supabase Free without backup" was previously caught in another repo), include reference: `pattern previously caught in <other-repo> as <finding-id>`. Reuses prior analysis.
 
-Output: `audit-B.md`. Wait for `OK Phase B`.
+**Before writing any findings**, open `audit-B.md` with an evidence dashboard (same format as Phase A). Health signal: PROVEN ≥ 60%. For cross-canon inherited findings, confidence starts at SUSPECTED — upgrade to PROVEN only after verifying the pattern in this repo's code.
+
+Then write findings table: `ID | Confidence | Dim | Finding | Evidence | OWASP/CVSS or ref | Severity | Effort`. Wait for `OK Phase B`.
 
 ### Step 5 — Phase C: Legal compliance
 
@@ -311,7 +332,9 @@ Required checks:
 13. **DPO contact** — public contact (email or form) dedicated for data protection inquiries.
 14. **JWT minimization** — JWTs should not carry PII beyond what's strictly necessary (don't put full email, name, phone in claims if a user ID is enough).
 
-Output: `audit-C.md`. Wait for `OK Phase C`.
+**Before writing any findings**, open `audit-C.md` with an evidence dashboard. Legal findings are often `manual-verification` (PROVEN by absence) or `NV_DASHBOARD` (plan tier, DPA acceptance state). Mark subtypes explicitly.
+
+Then write findings table: `ID | Confidence | Dim | Finding | Evidence | Reg / Art. | Severity | Effort`. Wait for `OK Phase C`.
 
 ### Step 6 — Phase D: Ops + Maintainability
 
@@ -328,7 +351,9 @@ Output: `audit-C.md`. Wait for `OK Phase C`.
 11. **Onboarding** — `docs/onboarding/` or equivalent for new contributors.
 12. **Deploy strategy** — git-push triggered? Manual? Approval gate? Rollback procedure?
 
-Output: `audit-D.md`. Wait for `OK Phase D`.
+**Before writing any findings**, open `audit-D.md` with an evidence dashboard. Ops findings often have `NV_DASHBOARD` or `NV_TOOL` subtypes — flag them explicitly so the reader knows what needs external verification.
+
+Then write findings table: `ID | Confidence | Dim | Finding | Evidence | Severity | Effort`. Wait for `OK Phase D`.
 
 ### Step 7 — Phase E: Synthesis + Roadmap
 
@@ -354,6 +379,21 @@ Consolidate all findings from A→D into:
    - Top 3 highest-ROI actions
    - Risk if nothing done in 3 months
    - External resources needed (legal review, pentest, professional a11y audit)
+
+3b. **Regression delta** (when previous audit exists):
+
+Compare `findings.json` from the most recent prior audit in `docs/audits/`. For every finding, assign `regression_status`:
+
+| Status | Meaning |
+|--------|---------|
+| `NEW` | Not present in previous audit |
+| `FIXED` | Was OPEN, now MITIGATED or absent |
+| `REGRESSED` | Was MITIGATED, now OPEN again |
+| `UNCHANGED` | Same status, same severity |
+| `ESCALATED` | Same finding, severity went up |
+| `DEESCALATED` | Same finding, severity went down |
+
+Surface as a dedicated section before the priority matrix. Any `REGRESSED` finding is automatically **P0** — a fix that didn't hold is a process failure, not a severity question.
 
 4. **Outputs**:
    - `docs/audits/YYYY-MM-DD-mariana/REPORT.md` — full audit consolidated
@@ -413,27 +453,40 @@ Summary:
 ## Honesty rules
 
 1. **No fixes without OK in `report` mode.** Even cosmetic.
-2. **Never invent a CVSS or WCAG ref.** If unsure, mark `[NOT VERIFIABLE — cite needed]`.
-3. **`[NOT VERIFIABLE]`** is a valid finding state. Mark explicitly when:
-   - Core Web Vitals require Lighthouse against deploy (skill can't run remote Lighthouse from CLI).
-   - Cyclomatic complexity per-function requires `eslint-plugin-complexity` or `radon` not installed.
-   - DPA acceptance state requires logging into vendor dashboards.
-   - Plan tier (Supabase Free vs Pro) requires dashboard login.
+2. **Never invent a CVSS or WCAG ref.** If unsure, mark as UNVERIFIABLE.
+3. **Confidence tier is mandatory. No exceptions.** A finding without `confidence_tier` is not emitted — it is dropped. See `rubrics/confidence.md` for the full gate.
+   - No `confidence_tier` → finding dropped
+   - Claims `PROVEN` without `file:line` → downgraded to `SUSPECTED`
+   - Claims `SUSPECTED` without graphify query result cited → downgraded to `UNVERIFIABLE`
+   - `UNVERIFIABLE` without subtype → finding dropped
+4. **`UNVERIFIABLE`** is a valid finding state with four mandatory subtypes. Use the most specific:
+   - `NV_RUNTIME` — Core Web Vitals, INP, real user behavior. Requires Lighthouse or browser session against deployed auth'd state.
+   - `NV_TOOL` — Cyclomatic complexity (`radon`, `eslint-plugin-complexity`), dependency audit (`pip-audit`), a11y scan (`axe-core`). Requires tool not installed.
+   - `NV_DASHBOARD` — DPA acceptance state, plan tier (Supabase Free vs Pro), WAF rules, Sentry org settings. Requires vendor dashboard login.
+   - `NV_CREDENTIALS` — Requires admin access or internal credentials the auditor does not have.
 4. **Evidence cite is mandatory**: every finding has `evidence` field with `file:line` or `graphify-query`. Without cite → finding gets rejected by review.
 5. **Severity is calibrated, not opinionated**. Use the rubric. If you can't justify severity per rubric, the finding may be informational.
 6. **Cross-canon checks** flag pattern matches but do NOT auto-inherit severity. Verify on this repo.
 
-## Evidence source tracking
+## Evidence source tracking + confidence tier
 
-Every finding in `findings.json` MUST carry `evidence_source`:
+Every finding in `findings.json` MUST carry BOTH `evidence_source` AND `confidence_tier`. Missing either → finding dropped. See `rubrics/confidence.md` for the full rubric and enforcement gate.
 
+**`evidence_source` values:**
 - `graph-local` — detected via graphify query/explain/path on local graph, no raw-code read.
 - `graph-global` — pattern inherited from another repo in `~/.graphify/global-graph.json`.
 - `code-read` — read directly from source file.
 - `tool-external` — `npm audit`, `pip-audit`, Lighthouse, etc.
 - `manual-verification` — human confirmed (e.g. dashboard access).
 
-Aim for **majority `graph-local` / `graph-global`**. If <50% → the graph is being underused; revisit query strategies.
+**`confidence_tier` values:**
+- `PROVEN` — specific `file:line` or tool output backs the finding. Maps to: `code-read`, `tool-external`, `manual-verification`.
+- `SUSPECTED` — graphify query surfaced the pattern; not yet verified in code. Maps to: `graph-local`, `graph-global`. Always attempt code verification before finalizing.
+- `UNVERIFIABLE` — requires external access or runtime. Must carry `not_verifiable_subtype`: `NV_RUNTIME` | `NV_DASHBOARD` | `NV_CREDENTIALS` | `NV_TOOL`.
+
+**Cross-canon confidence rule:** inherited patterns start as `SUSPECTED`. Upgrade to `PROVEN` only after verifying the pattern in this repo's code. Record both `confidence_at_inheritance` and `confidence_after_verification` in `cross_canon_inheritance_used`.
+
+Aim for **graph leverage ratio ≥ 50%** (`graph-local + graph-global / total`). Per-phase evidence dashboards (top of each `audit-X.md`) track this in real time. If PROVEN < 60% in any phase, re-attempt code verification on top suspected findings before proceeding.
 
 ## When to refuse
 

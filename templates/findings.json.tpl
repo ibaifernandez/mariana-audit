@@ -1,9 +1,9 @@
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "audit_id": "<repo>-YYYY-MM-DD-mariana",
   "started_at": "YYYY-MM-DDTHH:MM:SSZ",
   "finished_at": "YYYY-MM-DDTHH:MM:SSZ",
-  "auditor": "mariana-audit skill v1",
+  "auditor": "mariana-audit skill v2",
   "mode": "report | mitigate | case-by-case",
   "repo": {
     "path": "/absolute/path",
@@ -36,7 +36,21 @@
     "medium": 0,
     "low": 0,
     "info": 0,
-    "no_verificable": 0
+    "no_verificable": 0,
+    "confidence_breakdown": {
+      "proven": 0,
+      "suspected": 0,
+      "unverifiable": 0
+    }
+  },
+  "regression_delta": {
+    "previous_audit_id": null,
+    "new": 0,
+    "fixed": 0,
+    "regressed": 0,
+    "unchanged": 0,
+    "escalated": 0,
+    "deescalated": 0
   },
   "findings": [
     {
@@ -55,6 +69,8 @@
         "scope_changed": true,
         "impact": { "C": "High", "I": "High", "A": "Low" }
       },
+      "confidence_tier": "PROVEN",
+      "evidence_source": "code-read",
       "evidence": [
         {
           "type": "code-read",
@@ -75,7 +91,6 @@
           "snippet": "[[redirects]] from = '/uploads/*' to = 'https://<railway>/uploads/:splat'"
         }
       ],
-      "evidence_source": "code-read",
       "remediation": {
         "playbook": "playbooks/xss-svg-upload.md",
         "effort_hours": 4,
@@ -88,8 +103,34 @@
         "similar_pattern_in": [],
         "inherits_from": null
       },
+      "regression_status": "NEW | FIXED | REGRESSED | UNCHANGED | ESCALATED | DEESCALATED",
       "priority": "P0",
       "sprint": "Sprint 1 (closed)"
+    },
+    {
+      "id": "A-NV-01",
+      "fase": "A",
+      "dimension": "performance",
+      "title": "Core Web Vitals not measurable from static analysis",
+      "description": "LCP/INP/CLS cannot be audited without Lighthouse running against a deployed authenticated session.",
+      "severity": null,
+      "confidence_tier": "UNVERIFIABLE",
+      "not_verifiable_subtype": "NV_RUNTIME",
+      "evidence_source": null,
+      "evidence": [],
+      "recommended_external_action": "Run PageSpeed Insights manually against the deployed app's logged-in pages.",
+      "remediation": {
+        "playbook": null,
+        "effort_hours": 0,
+        "status": "OPEN"
+      },
+      "cross_canon": {
+        "similar_pattern_in": [],
+        "inherits_from": null
+      },
+      "regression_status": null,
+      "priority": null,
+      "sprint": null
     },
     {
       "id": "C-01",
@@ -102,10 +143,12 @@
       "severity_metadata": {
         "regulation": "GDPR",
         "article": "GDPR Art. 13",
-        "additional_articles": ["GDPR Art. 14", "Ley 21.719 Art. 14 ter"],
-        "data_subjects_affected": "all users (EU + Chile + others)",
-        "fine_exposure": "up to 4% global revenue or €20M (GDPR); up to 5,000 UTM (Ley 21.719)"
+        "additional_articles": ["GDPR Art. 14"],
+        "data_subjects_affected": "all users",
+        "fine_exposure": "up to 4% global revenue or €20M (GDPR)"
       },
+      "confidence_tier": "PROVEN",
+      "evidence_source": "manual-verification",
       "evidence": [
         {
           "type": "manual-verification",
@@ -113,7 +156,6 @@
           "result": "404 / SPA catch-all"
         }
       ],
-      "evidence_source": "manual-verification",
       "remediation": {
         "playbook": null,
         "effort_hours": 6,
@@ -125,6 +167,7 @@
         "similar_pattern_in": [],
         "inherits_from": null
       },
+      "regression_status": "NEW | FIXED | REGRESSED | UNCHANGED | ESCALATED | DEESCALATED",
       "priority": "P0",
       "sprint": "Sprint 1"
     }
@@ -134,12 +177,15 @@
       "current_finding_id": "B-CRIT-02",
       "inherited_from_repo": "<other-repo-tag>",
       "inherited_from_finding_id": "<other-finding-id>",
-      "reason": "same Supabase Free + no backup pattern"
+      "reason": "same Supabase Free + no backup pattern",
+      "confidence_at_inheritance": "SUSPECTED",
+      "confidence_after_verification": "PROVEN"
     }
   ],
   "no_verificable_items": [
     {
       "id": "A-NV-01",
+      "subtype": "NV_RUNTIME",
       "description": "Core Web Vitals (LCP/INP/CLS) for production",
       "reason": "Requires Lighthouse run against deploy with auth session",
       "recommended_external_action": "Run PageSpeed Insights manually against logged-in pages"
